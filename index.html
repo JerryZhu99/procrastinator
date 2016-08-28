@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Procrastinator</title>
+</head>
+<body ng-app="App" ng-controller="mainController" ng-cloak>
+    <md-toolbar class="md-hue-2" ng-show="!showSearch">
+        <div class="md-toolbar-tools">
+            <md-button class="md-icon-button" aria-label="Settings">
+                <md-icon md-font-library="material-icons">menu</md-icon>
+            </md-button>
+            <h2>
+                <span>Procrastinator</span>
+            </h2>
+            <span flex></span>
+            <md-button class="md-icon-button" aria-label="Settings" ng-click="showSearch=true">
+                <md-icon md-font-library="material-icons">search</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-toolbar md-theme="input" class="md-hue-1" ng-show="showSearch">
+        <div class="md-toolbar-tools">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch;search=''" aria-label="Back">
+            <md-icon md-font-library="material-icons">arrow_back</md-icon>
+          </md-button>
+          <md-input-container md-theme="input" flex>
+            <label>&nbsp;</label>
+            <input ng-model="search">
+          </md-input-container>
+          <md-button class="md-icon-button" aria-label="Search" ng-click="showSearch = !showSearch;search=''">
+            <md-icon md-font-library="material-icons">search</md-icon>
+          </md-button>
+        </div>
+      </md-toolbar>
+    <md-content>
+        <md-card ng-show="showNewAssignment&&!showSearch">
+            <md-card-title>
+                <md-card-title-text  layout="row" layout-align="space-between start">
+                    <span class="md-headline">New Assignment</span>
+                    <md-button class="md-icon-button" aria-label="Settings" ng-click="showNewAssignment=false">
+                        <md-icon md-font-library="material-icons">close</md-icon>
+                    </md-button>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <md-input-container class="md-block" flex-gt-xs>
+                    <label>Name</label>
+                    <input ng-model="newAssignment.name">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-xs>
+                    <label>Description</label>
+                    <textarea ng-model="newAssignment.description" rows="3" md-select-on-focus></textarea>
+                </md-input-container>
+                <md-datepicker ng-model="newAssignment.dueDate" md-placeholder="Enter due date"></md-datepicker>
+                <md-button class="md-primary" ng-click="addAssignment()">Create</md-button>
+            </md-card-content>
+        </md-card>
+        <md-card ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate'">
+            <md-card-title>
+                <md-card-title-text  layout="row" layout-align="space-between start">
+                    <span class="md-headline">{{assignment.name}}</span>
+                    <span class="md-subhead" style="padding:0">
+                        <md-tooltip md-direction="down">
+                            {{getDate(assignment)}}
+                        </md-tooltip>
+                        {{getDateDiff(assignment)}}
+                    </span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                {{assignment.description}}
+            </md-card-content>
+        </md-card>
+    </md-content>
+    <md-button class="md-fab" style="position: fixed; right: 16px; bottom: 16px;" ng-show="!showSearch&&!showNewAssignment" ng-click="showNewAssignment=true">
+        <md-icon md-font-library="material-icons">add</md-icon>
+    </md-button>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="/app.js" charset="utf-8"></script>
+    <script src="/maincontroller.js" charset="utf-8"></script>
+</body>
+</html>
