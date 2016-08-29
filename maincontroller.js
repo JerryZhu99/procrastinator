@@ -1,4 +1,6 @@
-app.controller('mainController', function($scope, $mdSidenav, $mdToast){
+app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialog){
+    window.scope = $scope;
+    $scope.theme="light";
     $scope.undoAssignment = {};
 
     $scope.newAssignment = {};
@@ -25,7 +27,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast){
     }
     $scope.showUndo = function(){
         var toast = $mdToast.simple()
-        .textContent('Removed assignment')
+        .textContent('Removed '+$scope.undoAssignment.name)
         .action('UNDO')
         .highlightAction(true)
         .highlightClass('md-accent')// Accent is used by default, this just demonstrates the usage.
@@ -60,4 +62,28 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast){
     $scope.showSideNav = function(){
         $mdSidenav('left').toggle();
     }
+    $scope.showSettings = function(ev) {
+        $mdDialog.show({
+            controller: DialogController,
+            contentElement: '#settings',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true
+        });
+    };
+    $scope.exportData = function(){
+        $scope.exports = JSON.stringify($scope.assignments);
+        $scope.export = true;
+    };
 });
+function DialogController($scope, $mdDialog) {
+   $scope.hide = function() {
+     $mdDialog.hide();
+   };
+   $scope.cancel = function() {
+     $mdDialog.cancel();
+   };
+   $scope.answer = function(answer) {
+     $mdDialog.hide(answer);
+   };
+ }
