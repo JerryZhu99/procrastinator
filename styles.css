@@ -1,1 +1,8 @@
 .md-errors-spacer:empty { display: none; }
+md-sidenav,
+md-sidenav.md-locked-open,
+md-sidenav.md-closed.md-locked-open-add-active {
+    min-width: 200px !important;
+    width: 65vw !important;
+    max-width: 400px !important;
+}
