@@ -84,7 +84,7 @@
     </div>
     <md-content class="columns" flex="100" flex-gt-md="66" flex-gt-lg="50">
         <div class="wrapper">
-            <md-card  ng-show="showNewAssignment&&!showSearch">
+            <md-card ng-show="showNewAssignment&&!showSearch">
                 <md-card-title>
                     <md-card-title-text  layout="row" layout-align="space-between start">
                         <span class="md-headline">New Assignment</span>
@@ -107,7 +107,7 @@
                 </md-card-content>
             </md-card>
         </div>
-        <div class="wrapper" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate'" md-swipe-right="removeAssignment(assignment)" class="assignment">
+        <div class="assignment wrapper" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' track by $index" md-swipe-right="removeAssignment(assignment)">
             <md-card>
                 <md-card-title>
                     <md-card-title-text  layout="row" layout-align="space-between start">
