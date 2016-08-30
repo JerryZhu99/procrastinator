@@ -1,8 +1,30 @@
 .md-errors-spacer:empty { display: none; }
+md-content{
+    overflow: hidden;
+}
 md-sidenav,
 md-sidenav.md-locked-open,
 md-sidenav.md-closed.md-locked-open-add-active {
     min-width: 200px !important;
     width: 65vw !important;
     max-width: 400px !important;
+}
+.loading{
+    max-height: 20px;
+}
+.loading.ng-hide{
+    transition:0.25s ease-out all;
+    max-height: 0;
+    opacity: 0;
+}
+.assignment.ng-animate {
+    transition:0.25s ease-out all;
+}
+.assignment.ng-leave{
+    opacity: 1;
+}
+.assignment.ng-leave.ng-leave-active{
+    margin-left: 100%;
+    margin-right: -100%;
+    opacity: 0;
 }

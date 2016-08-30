@@ -73,6 +73,9 @@
         </md-content>
     </md-sidenav>
     <md-content>
+        <div class="loading" layout="column" layout-align="space-around center" ng-hide="(driveAuth&&driveLoaded)||!driveAuth">
+          <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+        </div>
         <md-card ng-show="showNewAssignment&&!showSearch">
             <md-card-title>
                 <md-card-title-text  layout="row" layout-align="space-between start">
@@ -95,7 +98,7 @@
                 <md-button class="md-primary" ng-click="addAssignment()">Create</md-button>
             </md-card-content>
         </md-card>
-        <md-card ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' track by $index" md-swipe-right="removeAssignment(assignment)">
+        <md-card ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate'" md-swipe-right="removeAssignment(assignment)" class="assignment">
             <md-card-title>
                 <md-card-title-text  layout="row" layout-align="space-between start">
                     <span class="md-headline">{{assignment.name}}</span>
@@ -119,14 +122,8 @@
                         <md-button md-theme="light" ng-click="theme='light'">Light Theme</md-button>
                         <md-button md-theme="dark" ng-click="theme='dark'">Dark Theme</md-button>
                     </div>
-                    <div layout="row" layout-align="center center">
-                        <md-button ng-click="exportData()">Export Data</md-button>
-                    </div>
-                    <div ng-show="export">
-                        <md-input-container class="md-block">
-                            <label>Export Data</label>
-                            <textarea ng-model="exports" name="exports" rows="4"></textarea>
-                        </md-input-container>
+                    <div layout="row" ng-hide="driveAuth" layout-align="center center">
+                        <md-button ng-click="handleAuthClick(event)">Link to Google</md-button>
                     </div>
                 </md-dialog>
             </div>
@@ -143,5 +140,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
 <script src="app.js" charset="utf-8"></script>
 <script src="maincontroller.js" charset="utf-8"></script>
+<script src="drive.js" charset="utf-8"></script>
+<script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
 </body>
 </html>

@@ -2,7 +2,6 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     window.scope = $scope;
     $scope.theme="light";
     $scope.undoAssignment = {};
-
     $scope.newAssignment = {};
     if(localStorage.getItem("assignments")==null){
         localStorage.setItem("assignments", "[]")
@@ -12,16 +11,21 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         var assignment = {}
         assignment.name = $scope.newAssignment.name;
         assignment.description = $scope.newAssignment.description;
-        assignment.dueDate = $scope.newAssignment.dueDate;
+        assignment.dueDate = $scope.newAssignment.dueDate.toISOString();
         $scope.assignments.push(assignment);
         $scope.newAssignment = {};
         $scope.showNewAssignment = false;
-
+        if($scope.driveLoaded){
+            $scope.updateFile($scope.fileId,$scope.assignments);
+        }
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
     }
     $scope.removeAssignment = function(assignment){
         var index = $scope.assignments.indexOf(assignment);
         $scope.undoAssignment = $scope.assignments.splice(index, 1)[0];
+        if($scope.driveLoaded){
+            $scope.updateFile($scope.fileId,$scope.assignments);
+        }
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
         $scope.showUndo();
     }
@@ -35,6 +39,9 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         $mdToast.show(toast).then(function(response) {
             if ( response == 'ok' ) {
                 $scope.assignments.push($scope.undoAssignment);
+                if($scope.driveLoaded){
+                    $scope.updateFile($scope.fileId,$scope.assignments);
+                }
                 localStorage.setItem("assignments", JSON.stringify($scope.assignments));
                 $mdToast.hide(toast);
             }
@@ -75,15 +82,139 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         $scope.exports = JSON.stringify($scope.assignments);
         $scope.export = true;
     };
+    $scope.driveAuth = true;
+    $scope.driveLoaded = false;
+    $scope.checkAuth = function() {
+        gapi.auth.authorize({
+            'client_id': CLIENT_ID,
+            'scope': SCOPES.join(' '),
+            'immediate': true
+        }, $scope.handleAuthResult);
+    }
+    $scope.handleAuthResult = function(authResult){
+        if (authResult && !authResult.error) {
+            $scope.driveAuth = true;
+            $scope.loadDriveApi();
+        }else{
+            $scope.driveAuth = false;
+        }
+    }
+    $scope.handleAuthClick = function() {
+        gapi.auth.authorize(
+            {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+            $scope.handleAuthResult
+        );
+        return false;
+    }
+    $scope.loadDriveApi = function(){
+        gapi.client.load('drive', 'v3', $scope.onDriveLoaded);
+    }
+    $scope.onDriveLoaded = function(){
+        $scope.driveLoaded = true;
+        $scope.findFile("procrastinator-data.json",function(response){
+            console.log(response);
+            if(response.files.length == 0){
+                $scope.createFile("procrastinator-data.json",JSON.stringify($scope.assignments),function(file){
+                    $scope.driveFileId = file.id;
+                })
+            }else{
+                $scope.fileId = response.files[0].id;
+                $scope.getFile($scope.fileId, function(file){
+                    console.log(file);
+                    $scope.assignments = file;
+                    $scope.$apply();
+                });
+            }
+        });
+    }
+    $scope.createFile = function(name,data,callback) {
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        const contentType = 'application/json';
+
+        var metadata = {
+            'name': name,
+            'mimeType': contentType,
+            'parents': [ 'appDataFolder']
+        };
+
+        var multipartRequestBody =
+        delimiter +
+        'Content-Type: application/json\r\n\r\n' +
+        JSON.stringify(metadata) +
+        delimiter +
+        'Content-Type: ' + contentType + '\r\n\r\n' +
+        data +
+        close_delim;
+
+        var request = gapi.client.request({
+            'path': '/upload/drive/v3/files',
+            'method': 'POST',
+            'params': {'uploadType': 'multipart'},
+            'headers': {
+                'Content-Type': 'multipart/related; boundary="' + boundary + '"'
+            },
+            'body': multipartRequestBody
+        });
+        if (!callback) {
+            callback = function(file) {
+                console.log(file)
+            };
+        }
+        request.execute(callback);
+    }
+    $scope.updateFile = function(fileId,data,callback) {
+        var request = gapi.client.request({
+            'path': '/upload/drive/v3/files/'+fileId,
+            'method': 'PATCH',
+            'params': {'uploadType': 'media'},
+            'body': data
+        });
+        if (!callback) {
+            callback = function(file) {
+                console.log(file)
+            };
+        }
+        request.execute(callback);
+    }
+    $scope.findFile = function(name, callback){
+        var request = gapi.client.request({
+            'path': '/drive/v3/files',
+            'method': 'GET',
+            'params': {'maxResults': '1','q':"name = '"+name+"' ",'spaces':'appDataFolder'}
+        });
+        if (!callback) {
+            callback = function(file) {
+                console.log(file)
+            };
+        }
+        request.execute(callback);
+    }
+    $scope.getFile = function(fileId, callback){
+        var request = gapi.client.request({
+            'path': '/drive/v3/files/'+fileId,
+            'method': 'GET',
+            'params': {'alt':'media'}
+        });
+        if (!callback) {
+            callback = function(file) {
+                console.log(file)
+            };
+        }
+        request.execute(callback);
+    }
+
 });
 function DialogController($scope, $mdDialog) {
-   $scope.hide = function() {
-     $mdDialog.hide();
-   };
-   $scope.cancel = function() {
-     $mdDialog.cancel();
-   };
-   $scope.answer = function(answer) {
-     $mdDialog.hide(answer);
-   };
- }
+    $scope.hide = function() {
+        $mdDialog.hide();
+    };
+    $scope.cancel = function() {
+        $mdDialog.cancel();
+    };
+    $scope.answer = function(answer) {
+        $mdDialog.hide(answer);
+    };
+}
