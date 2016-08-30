@@ -34,8 +34,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         .textContent('Removed '+$scope.undoAssignment.name)
         .action('UNDO')
         .highlightAction(true)
-        .highlightClass('md-accent')// Accent is used by default, this just demonstrates the usage.
-        .position('top');
+        .position('bottom right');
         $mdToast.show(toast).then(function(response) {
             if ( response == 'ok' ) {
                 $scope.assignments.push($scope.undoAssignment);

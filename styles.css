@@ -9,6 +9,31 @@ md-sidenav.md-closed.md-locked-open-add-active {
     width: 65vw !important;
     max-width: 400px !important;
 }
+.columns {
+	-webkit-column-count: 3;
+	-webkit-column-gap: 0;
+	-webkit-column-fill: auto;
+	-moz-column-count: 3;
+	-moz-column-gap: 0;
+	-moz-column-fill: auto;
+	column-count: 3;
+	column-gap: 0;
+	column-fill: auto;
+    -webkit-column-width: 300px;
+   -moz-column-width: 300px;
+        column-width: 300px;
+    overflow: visible;
+}
+.wrapper{
+    -webkit-column-break-inside: avoid;
+          page-break-inside: avoid;
+               break-inside: avoid;
+               padding: 8px;
+               margin: -8px 0;
+}
+.wrapper>md-card{
+    margin: 0;
+}
 .loading{
     max-height: 20px;
 }
