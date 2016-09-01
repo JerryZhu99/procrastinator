@@ -10,30 +10,37 @@ md-sidenav.md-closed.md-locked-open-add-active {
     max-width: 400px !important;
 }
 .columns {
-	-webkit-column-count: 3;
-	-webkit-column-gap: 0;
-	-webkit-column-fill: auto;
-	-moz-column-count: 3;
-	-moz-column-gap: 0;
-	-moz-column-fill: auto;
-	column-count: 3;
-	column-gap: 0;
-	column-fill: auto;
+    -webkit-perspective:1;
+    -webkit-column-count: 3;
+    -webkit-column-gap: 0;
+    -webkit-column-fill: auto;
+    -moz-column-count: 3;
+    -moz-column-gap: 0;
+    -moz-column-fill: auto;
+    column-count: 3;
+    column-gap: 0;
+    column-fill: auto;
     -webkit-column-width: 300px;
-   -moz-column-width: 300px;
-        column-width: 300px;
+    -moz-column-width: 300px;
+    column-width: 300px;
+    -moz-column-fill: balance;
+    column-fill: balance;
     overflow: visible;
 }
 .wrapper{
     -webkit-column-break-inside: avoid;
-          page-break-inside: avoid;
-               break-inside: avoid;
-               padding: 8px 0 8px;
-               margin: 0 0 -8px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    padding: 8px 0 8px;
+    margin: 0 0 -8px;
+}
+.wrapper:last-of-type{
+    padding: 8px 0 16px;
 }
 .wrapper>md-card{
     margin: 0 8px;
 }
+
 .loading{
     max-height: 20px;
 }

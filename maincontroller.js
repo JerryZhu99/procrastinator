@@ -29,6 +29,27 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
         $scope.showUndo();
     }
+    $scope.startEdit = function(assignment){
+        assignment.editing = true;
+        assignment.editedName = assignment.name;
+        assignment.editedDescription = assignment.description;
+        assignment.editedDueDate = new Date(assignment.dueDate);
+    }
+    $scope.editAssignment = function(assignment, save){
+        assignment.editing = undefined;
+        if(save){
+            assignment.name = assignment.editedName;
+            assignment.description = assignment.editedDescription;
+            assignment.dueDate = assignment.editedDueDate;
+        }
+        assignment.editedName = undefined;
+        assignment.editedDescription = undefined;
+        assignment.editedDueDate = undefined;
+        if($scope.driveLoaded){
+            $scope.updateFile($scope.fileId,$scope.assignments);
+        }
+        localStorage.setItem("assignments", JSON.stringify($scope.assignments));
+    }
     $scope.showUndo = function(){
         var toast = $mdToast.simple()
         .textContent('Removed '+$scope.undoAssignment.name)
