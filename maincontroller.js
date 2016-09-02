@@ -3,8 +3,15 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     $scope.theme="light";
     $scope.undoAssignment = {};
     $scope.newAssignment = {};
+
     if(localStorage.getItem("assignments")==null){
         localStorage.setItem("assignments", "[]")
+    }
+    function generateID() {
+        var S4 = function() {
+            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        };
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
     }
     $scope.assignments = JSON.parse(localStorage.getItem("assignments"));
     $scope.hideNewAssignment = function(){
@@ -16,6 +23,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         assignment.name = $scope.newAssignment.name;
         assignment.description = $scope.newAssignment.description;
         assignment.dueDate = $scope.newAssignment.dueDate.toISOString();
+        assignment.id - generateID();
         $scope.assignments.push(assignment);
         $scope.newAssignment = {};
         $scope.showNewAssignment = false;
@@ -43,17 +51,18 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         $scope.update();
     }
     $scope.editAssignment = function(assignment, save){
-        assignment.editing = undefined;
-        assignment.editedName = undefined;
-        assignment.editedDescription = undefined;
-        assignment.editedDueDate = undefined;
+        if(!assignment.id){assignment.id = generateID();}
         if(save){
             assignment.name = assignment.editedName;
             assignment.description = assignment.editedDescription;
             assignment.dueDate = assignment.editedDueDate;
-            if($scope.driveLoaded){
-                $scope.updateFile($scope.fileId,$scope.assignments);
-            }
+        }
+        assignment.editing = undefined;
+        assignment.editedName = undefined;
+        assignment.editedDescription = undefined;
+        assignment.editedDueDate = undefined;
+        if($scope.driveLoaded){
+            $scope.updateFile($scope.fileId,$scope.assignments);
         }
         $scope.update();
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
@@ -152,6 +161,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
                     console.log(file);
                     $scope.assignments = file;
                     $scope.$apply();
+                    localStorage.setItem("assignments", JSON.stringify($scope.assignments));
                 });
             }
         });

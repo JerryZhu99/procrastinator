@@ -10,7 +10,7 @@
     <title>Procrastinator</title>
 </head>
 <body ng-app="App" ng-controller="mainController" md-theme="{{ theme }}" ng-cloak>
-    <md-content style="min-height:100%">
+    <md-content style="min-height:100%" layout="column" layout-align:"start">
         <md-toolbar class="md-hue-2" ng-show="!showSearch">
             <div class="md-toolbar-tools">
                 <md-button class="md-icon-button" ng-click="showSideNav()" aria-label="Settings">
@@ -78,7 +78,7 @@
         <div class="loading" ng-hide="(driveAuth&&driveLoaded)||!driveAuth">
             <md-progress-linear md-mode="indeterminate"></md-progress-linear>
         </div>
-        <md-content masonry='{ "transitionDuration" : "0.4s" , "itemSelector" : ".tile"}' class="card-container">
+        <md-content masonry='{ "transitionDuration" : "0.4s" , "itemSelector" : ".tile","stagger":"30"}' class="card-container" flex="100">
             <div masonry-tile class="tile" ng-if="showNewAssignment&&!showSearch">
                 <md-card>
                     <md-card-title>

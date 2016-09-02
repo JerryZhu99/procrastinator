@@ -14,7 +14,7 @@ md-sidenav.md-closed.md-locked-open-add-active {
 }
 .card-container{
     margin: auto;
-    width: 100%
+    width: 100%;
 }
 @media only screen and (min-width: 600px) {
     .tile{
