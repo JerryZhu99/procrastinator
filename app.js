@@ -1,4 +1,4 @@
-var app = angular.module('App', ['ngMaterial','ngAnimate']);
+var app = angular.module('App', ['ngMaterial','ngAnimate','masonry']);
 app.config(function($mdThemingProvider) {
     $mdThemingProvider.theme('input-light', 'default')
     .primaryPalette('grey',{

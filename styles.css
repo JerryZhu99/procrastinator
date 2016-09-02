@@ -9,36 +9,31 @@ md-sidenav.md-closed.md-locked-open-add-active {
     width: 65vw !important;
     max-width: 400px !important;
 }
-.columns {
-    -webkit-perspective:1;
-    -webkit-column-count: 3;
-    -webkit-column-gap: 0;
-    -webkit-column-fill: auto;
-    -moz-column-count: 3;
-    -moz-column-gap: 0;
-    -moz-column-fill: auto;
-    column-count: 3;
-    column-gap: 0;
-    column-fill: auto;
-    -webkit-column-width: 300px;
-    -moz-column-width: 300px;
-    column-width: 300px;
-    -moz-column-fill: balance;
-    column-fill: balance;
-    overflow: visible;
+.tile{
+    width: 100%;
 }
-.wrapper{
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    padding: 8px 0 8px;
-    margin: 0 0 -8px;
+.card-container{
+    margin: auto;
+    width: 100%
 }
-.wrapper:last-of-type{
-    padding: 8px 0 16px;
+@media only screen and (min-width: 600px) {
+    .tile{
+        width: 50%;
+    }
 }
-.wrapper>md-card{
-    margin: 0 8px;
+@media only screen and (min-width: 960px) {
+    .tile{
+        width: 33.33%;
+    }
+}
+@media only screen and (min-width: 1280px) {
+    .card-container{
+        min-width: 1280px;
+        width: 60%
+    }
+}
+@media only screen and (min-width: 1920px) {
+
 }
 
 .loading{
@@ -47,16 +42,5 @@ md-sidenav.md-closed.md-locked-open-add-active {
 .loading.ng-hide{
     transition:0.25s ease-out all;
     max-height: 0;
-    opacity: 0;
-}
-.assignment.ng-animate {
-    transition:0.25s ease-out all;
-}
-.assignment.ng-leave{
-    opacity: 1;
-}
-.assignment.ng-leave.ng-leave-active{
-    margin-left: 100%;
-    margin-right: -100%;
     opacity: 0;
 }

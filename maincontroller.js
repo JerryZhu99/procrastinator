@@ -7,6 +7,10 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         localStorage.setItem("assignments", "[]")
     }
     $scope.assignments = JSON.parse(localStorage.getItem("assignments"));
+    $scope.hideNewAssignment = function(){
+        $scope.showNewAssignment = false;
+        $scope.update();
+    }
     $scope.addAssignment = function(){
         var assignment = {}
         assignment.name = $scope.newAssignment.name;
@@ -28,26 +32,30 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         }
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
         $scope.showUndo();
+        $scope.removeBrick();
     }
     $scope.startEdit = function(assignment){
         assignment.editing = true;
         assignment.editedName = assignment.name;
         assignment.editedDescription = assignment.description;
         assignment.editedDueDate = new Date(assignment.dueDate);
+
+        $scope.update();
     }
     $scope.editAssignment = function(assignment, save){
         assignment.editing = undefined;
+        assignment.editedName = undefined;
+        assignment.editedDescription = undefined;
+        assignment.editedDueDate = undefined;
         if(save){
             assignment.name = assignment.editedName;
             assignment.description = assignment.editedDescription;
             assignment.dueDate = assignment.editedDueDate;
+            if($scope.driveLoaded){
+                $scope.updateFile($scope.fileId,$scope.assignments);
+            }
         }
-        assignment.editedName = undefined;
-        assignment.editedDescription = undefined;
-        assignment.editedDueDate = undefined;
-        if($scope.driveLoaded){
-            $scope.updateFile($scope.fileId,$scope.assignments);
-        }
+        $scope.update();
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
     }
     $scope.showUndo = function(){
@@ -64,6 +72,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
                 }
                 localStorage.setItem("assignments", JSON.stringify($scope.assignments));
                 $mdToast.hide(toast);
+                $scope.update();
             }
         });
     }

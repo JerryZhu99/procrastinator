@@ -46,146 +46,146 @@
                 </md-button>
             </div>
         </md-toolbar>
-        <md-sidenav
-        class="md-sidenav-left"
-        md-component-id="left"
-        md-is-locked-open="false"
-        md-whiteframe="4">
-        <md-content>
-            <md-toolbar class="md-hue-2">
-                <div class="md-toolbar-tools" ng-click="showSideNav()">
-                    <h1>Back</h1>
-                </div>
-            </md-toolbar>
-            <md-list flex>
-                <md-list-item ng-click="null" ng-href="/">
-                    <div class="md-list-item-text" layout="row">
-                        <md-icon md-font-library="material-icons">home</md-icon>
-                        &nbsp; Home
+        <md-sidenav class="md-sidenav-left" md-component-id="left" md-is-locked-open="false" md-whiteframe="4">
+            <md-content>
+                <md-toolbar class="md-hue-2">
+                    <div class="md-toolbar-tools" ng-click="showSideNav()">
+                        <h1>Back</h1>
                     </div>
-                </md-list-item>
-                <md-list-item ng-click="showSettings($event)">
-                    <div class="md-list-item-text" layout="row">
-                        <md-icon md-font-library="material-icons">settings</md-icon>
-                        &nbsp; Settings
-                    </div>
-                </md-list-item>
-                <md-list-item ng-click="null" ng-href="/about">
-                    <div class="md-list-item-text" layout="row">
-                        <md-icon md-font-library="material-icons">info</md-icon>
-                        &nbsp; About
-                    </div>
-                </md-list-item>
-            </md-list>
-        </md-content>
-    </md-sidenav>
-    <div class="loading" ng-hide="(driveAuth&&driveLoaded)||!driveAuth">
-        <md-progress-linear md-mode="indeterminate"></md-progress-linear>
-    </div>
-    <md-content class="columns" flex-gt-md="60" flex-offset-gt-md="20" flex="100">
-        <div class="wrapper" ng-show="showNewAssignment&&!showSearch">
-            <md-card>
-                <md-card-title>
-                    <md-card-title-text  layout="row" layout-align="space-between start">
-                        <span class="md-headline">New Assignment</span>
-                        <md-button class="md-icon-button" aria-label="Settings" ng-click="showNewAssignment=false">
-                            <md-icon md-font-library="material-icons">close</md-icon>
+                </md-toolbar>
+                <md-list flex>
+                    <md-list-item ng-click="null" ng-href="/">
+                        <div class="md-list-item-text" layout="row">
+                            <md-icon md-font-library="material-icons">home</md-icon>
+                            &nbsp; Home
+                        </div>
+                    </md-list-item>
+                    <md-list-item ng-click="showSettings($event)">
+                        <div class="md-list-item-text" layout="row">
+                            <md-icon md-font-library="material-icons">settings</md-icon>
+                            &nbsp; Settings
+                        </div>
+                    </md-list-item>
+                    <md-list-item ng-click="null" ng-href="/about">
+                        <div class="md-list-item-text" layout="row">
+                            <md-icon md-font-library="material-icons">info</md-icon>
+                            &nbsp; About
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+        </md-sidenav>
+        <div class="loading" ng-hide="(driveAuth&&driveLoaded)||!driveAuth">
+            <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+        </div>
+        <md-content masonry='{ "transitionDuration" : "0.4s" , "itemSelector" : ".tile"}' class="card-container">
+            <div masonry-tile class="tile" ng-if="showNewAssignment&&!showSearch">
+                <md-card>
+                    <md-card-title>
+                        <md-card-title-text  layout="row" layout-align="space-between start">
+                            <span class="md-headline">New Assignment</span>
+                            <md-button class="md-icon-button" aria-label="Settings" ng-click="hideNewAssignment()">
+                                <md-icon md-font-library="material-icons">close</md-icon>
+                            </md-button>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                        <md-input-container class="md-block" flex-gt-xs>
+                            <label>Name</label>
+                            <input ng-model="newAssignment.name">
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-xs>
+                            <label>Description</label>
+                            <textarea ng-model="newAssignment.description" rows="3" md-select-on-focus></textarea>
+                        </md-input-container>
+                        <md-datepicker ng-model="newAssignment.dueDate" md-placeholder="Enter due date"></md-datepicker>
+                        <md-card-actions layout="row" layout-align="end center">
+                            <md-button class="md-primary" ng-click="addAssignment()">Create</md-button>
+                        </md-card-actions>
+                    </md-card-content>
+                </md-card>
+            </div>
+            <div masonry-tile class="tile" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' " md-swipe-right="removeAssignment(assignment)">
+                <md-card>
+                    <md-card-title ng-hide="assignment.editing">
+                        <md-card-title-text  layout="row" layout-align="space-between start">
+                            <span class="md-headline">{{assignment.name}}</span>
+                            <span class="md-subhead" style="padding:0">
+                                <md-tooltip md-direction="down">
+                                    {{getDate(assignment)}}
+                                </md-tooltip>
+                                {{getDateDiff(assignment)}}
+                            </span>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content ng-hide="assignment.editing">
+                        {{assignment.description}}
+                    </md-card-content>
+                    <md-card-actions layout="row" layout-align="end center" ng-hide="assignment.editing">
+                        <md-button class="md-icon-button" ng-click="startEdit(assignment)" aria-label="Edit">
+                            <md-icon md-font-library="material-icons">edit</md-icon>
                         </md-button>
-                    </md-card-title-text>
-                </md-card-title>
-                <md-card-content>
-                    <md-input-container class="md-block" flex-gt-xs>
-                        <label>Name</label>
-                        <input ng-model="newAssignment.name">
-                    </md-input-container>
-                    <md-input-container class="md-block" flex-gt-xs>
-                        <label>Description</label>
-                        <textarea ng-model="newAssignment.description" rows="3" md-select-on-focus></textarea>
-                    </md-input-container>
-                    <md-datepicker ng-model="newAssignment.dueDate" md-placeholder="Enter due date"></md-datepicker>
-                    <md-card-actions layout="row" layout-align="end center">
-                        <md-button class="md-primary" ng-click="addAssignment()">Create</md-button>
+                        <md-button class="md-icon-button" ng-click="removeAssignment(assignment)" aria-label="Delete">
+                            <md-icon md-font-library="material-icons">delete</md-icon>
+                        </md-button>
                     </md-card-actions>
-                </md-card-content>
-            </md-card>
-        </div>
-        <div class="assignment wrapper" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' track by $index" md-swipe-right="removeAssignment(assignment)">
-            <md-card>
-                <md-card-title ng-hide="assignment.editing">
-                    <md-card-title-text  layout="row" layout-align="space-between start">
-                        <span class="md-headline">{{assignment.name}}</span>
-                        <span class="md-subhead" style="padding:0">
-                            <md-tooltip md-direction="down">
-                                {{getDate(assignment)}}
-                            </md-tooltip>
-                            {{getDateDiff(assignment)}}
-                        </span>
-                    </md-card-title-text>
-                </md-card-title>
-                <md-card-content ng-hide="assignment.editing">
-                    {{assignment.description}}
-                </md-card-content>
-                <md-card-actions layout="row" layout-align="end center" ng-hide="assignment.editing">
-                    <md-button class="md-icon-button" ng-click="startEdit(assignment)" aria-label="Edit">
-                        <md-icon md-font-library="material-icons">edit</md-icon>
-                    </md-button>
-                    <md-button class="md-icon-button" ng-click="removeAssignment(assignment)" aria-label="Delete">
-                        <md-icon md-font-library="material-icons">delete</md-icon>
-                    </md-button>
-                </md-card-actions>
-                <md-card-title ng-show="assignment.editing">
-                    <md-card-title-text  layout="row" layout-align="space-between start">
-                        <span class="md-headline">Edit Assignment</span>
-                        <md-button class="md-icon-button" aria-label="Settings" ng-click="editAssignment(assignment, false)">
-                            <md-icon md-font-library="material-icons">close</md-icon>
+                    <md-card-title ng-show="assignment.editing">
+                        <md-card-title-text  layout="row" layout-align="space-between start">
+                            <span class="md-headline">Edit Assignment</span>
+                            <md-button class="md-icon-button" aria-label="Settings" ng-click="editAssignment(assignment, false)">
+                                <md-icon md-font-library="material-icons">close</md-icon>
+                            </md-button>
+                        </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content ng-show="assignment.editing">
+                        <md-input-container class="md-block" flex-gt-xs>
+                            <label>Name</label>
+                            <input ng-model="assignment.editedName">
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-xs>
+                            <label>Description</label>
+                            <textarea ng-model="assignment.editedDescription" rows="3" md-select-on-focus></textarea>
+                        </md-input-container>
+                        <md-datepicker ng-model="assignment.editedDueDate" md-placeholder="Enter due date"></md-datepicker>
+                    </md-card-content>
+                    <md-card-actions layout="row" layout-align="end center" ng-show="assignment.editing">
+                        <md-button class="md-primary" ng-click="editAssignment(assignment,true)" aria-label="Save">
+                            Save
                         </md-button>
-                    </md-card-title-text>
-                </md-card-title>
-                <md-card-content ng-show="assignment.editing">
-                    <md-input-container class="md-block" flex-gt-xs>
-                        <label>Name</label>
-                        <input ng-model="assignment.editedName">
-                    </md-input-container>
-                    <md-input-container class="md-block" flex-gt-xs>
-                        <label>Description</label>
-                        <textarea ng-model="assignment.editedDescription" rows="3" md-select-on-focus></textarea>
-                    </md-input-container>
-                    <md-datepicker ng-model="assignment.editedDueDate" md-placeholder="Enter due date"></md-datepicker>
-                </md-card-content>
-                <md-card-actions layout="row" layout-align="end center" ng-show="assignment.editing">
-                    <md-button class="md-primary" ng-click="editAssignment(assignment,true)" aria-label="Save">
-                        Save
-                    </md-button>
-                </md-card-actions>
-            </md-card>
+                    </md-card-actions>
+                </md-card>
+            </div>
+        </md-content>
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="settings">
+                <md-dialog layout-padding>
+                    <h2>Settings</h2>
+                    <div layout="row" layout-align="center center">
+                        <md-button md-theme="light" ng-click="theme='light'">Light Theme</md-button>
+                        <md-button md-theme="dark" ng-click="theme='dark'">Dark Theme</md-button>
+                    </div>
+                    <div layout="row" ng-hide="driveAuth" layout-align="center center">
+                        <md-button ng-click="handleAuthClick(event)">Link to Google</md-button>
+                    </div>
+                </md-dialog>
+            </div>
         </div>
+        <md-button class="md-fab md-fab-bottom-right" style="position:fixed" ng-show="!showSearch&&!showNewAssignment" ng-click="showNewAssignment=true">
+            <md-icon md-font-library="material-icons">add</md-icon>
+        </md-button>
     </md-content>
-    <div style="visibility: hidden">
-        <div class="md-dialog-container" id="settings">
-            <md-dialog layout-padding>
-                <h2>Settings</h2>
-                <div layout="row" layout-align="center center">
-                    <md-button md-theme="light" ng-click="theme='light'">Light Theme</md-button>
-                    <md-button md-theme="dark" ng-click="theme='dark'">Dark Theme</md-button>
-                </div>
-                <div layout="row" ng-hide="driveAuth" layout-align="center center">
-                    <md-button ng-click="handleAuthClick(event)">Link to Google</md-button>
-                </div>
-            </md-dialog>
-        </div>
-    </div>
-    <md-button class="md-fab md-fab-bottom-right" style="position:fixed" ng-show="!showSearch&&!showNewAssignment" ng-click="showNewAssignment=true">
-        <md-icon md-font-library="material-icons">add</md-icon>
-    </md-button>
-</md-content>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
-<script src="app.js" charset="utf-8"></script>
-<script src="maincontroller.js" charset="utf-8"></script>
-<script src="drive.js" charset="utf-8"></script>
-<script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="https://npmcdn.com/imagesloaded@4.1/imagesloaded.pkgd.js"></script>
+    <script src="masonry.pkgd.min.js"></script>
+    <script src="angular-masonry-directive.js"></script>
+    <script src="app.js" charset="utf-8"></script>
+    <script src="maincontroller.js" charset="utf-8"></script>
+    <script src="drive.js" charset="utf-8"></script>
+    <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
 </body>
 </html>
