@@ -21,27 +21,25 @@
                 </h2>
                 <span flex></span>
 
-                <md-input-container flex hide show-gt-sm md-theme="dark">
-                    <label>&nbsp;</label>
+                <md-input-container md-no-float flex hide show-gt-sm md-theme="dark">
                     <input ng-model="search" placeholder="Search">
                     <md-icon md-font-library="material-icons" flex hide show-gt-sm>search</md-icon>
                 </md-input-container>
 
-                <md-button class="md-icon-button" aria-label="Search" hide-gt-sm ng-click="showSearch=true">
+                <md-button class="md-icon-button" aria-label="Search" hide-gt-sm ng-click="toggleSearch()">
                     <md-icon md-font-library="material-icons">search</md-icon>
                 </md-button>
             </div>
         </md-toolbar>
         <md-toolbar md-theme="{{'input-' + theme }}" class="md-hue-1" ng-show="showSearch">
             <div class="md-toolbar-tools">
-                <md-button class="md-icon-button" ng-click="showSearch = !showSearch;search=''" aria-label="Back">
+                <md-button class="md-icon-button" ng-click="toggleSearch();search=''" aria-label="Back">
                     <md-icon md-font-library="material-icons">arrow_back</md-icon>
                 </md-button>
-                <md-input-container flex>
-                    <label>&nbsp;</label>
-                    <input ng-model="search">
+                <md-input-container md-no-float flex>
+                    <input ng-model="search" placeholder="Search">
                 </md-input-container>
-                <md-button class="md-icon-button" aria-label="Search" ng-click="showSearch = !showSearch;search=''">
+                <md-button class="md-icon-button" aria-label="Search" ng-click="toggleSearch();search=''">
                     <md-icon md-font-library="material-icons">search</md-icon>
                 </md-button>
             </div>
@@ -54,19 +52,13 @@
                     </div>
                 </md-toolbar>
                 <md-list flex>
-                    <md-list-item ng-click="null" ng-href="/">
-                        <div class="md-list-item-text" layout="row">
-                            <md-icon md-font-library="material-icons">home</md-icon>
-                            &nbsp; Home
-                        </div>
-                    </md-list-item>
-                    <md-list-item ng-click="showSettings($event)">
+                    <md-list-item ng-click="showDialog($event, '#settings')">
                         <div class="md-list-item-text" layout="row">
                             <md-icon md-font-library="material-icons">settings</md-icon>
                             &nbsp; Settings
                         </div>
                     </md-list-item>
-                    <md-list-item ng-click="null" ng-href="/about">
+                    <md-list-item  ng-click="showDialog($event, '#about')">
                         <div class="md-list-item-text" layout="row">
                             <md-icon md-font-library="material-icons">info</md-icon>
                             &nbsp; About
@@ -79,7 +71,7 @@
             <md-progress-linear md-mode="indeterminate"></md-progress-linear>
         </div>
         <md-content masonry='{ "transitionDuration" : "0.4s" , "itemSelector" : ".tile","stagger":"30"}' class="card-container" flex="100">
-            <div masonry-tile class="tile" ng-if="showNewAssignment&&!showSearch">
+            <div masonry-tile class="tile" ng-if="creating&&!showSearch">
                 <md-card>
                     <md-card-title>
                         <md-card-title-text  layout="row" layout-align="space-between start">
@@ -105,7 +97,7 @@
                     </md-card-content>
                 </md-card>
             </div>
-            <div masonry-tile class="tile" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' " md-swipe-right="removeAssignment(assignment)">
+            <div masonry-tile class="tile" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' track by assignment.id">
                 <md-card>
                     <md-card-title ng-hide="assignment.editing">
                         <md-card-title-text  layout="row" layout-align="space-between start">
@@ -121,7 +113,7 @@
                     <md-card-content ng-hide="assignment.editing">
                         {{assignment.description}}
                     </md-card-content>
-                    <md-card-actions layout="row" layout-align="end center" ng-hide="assignment.editing">
+                    <md-card-actions layout="row" layout-align="start center" ng-hide="assignment.editing">
                         <md-button class="md-icon-button" ng-click="startEdit(assignment)" aria-label="Edit">
                             <md-icon md-font-library="material-icons">edit</md-icon>
                         </md-button>
@@ -161,8 +153,8 @@
                 <md-dialog layout-padding>
                     <h2>Settings</h2>
                     <div layout="row" layout-align="center center">
-                        <md-button md-theme="light" ng-click="theme='light'">Light Theme</md-button>
-                        <md-button md-theme="dark" ng-click="theme='dark'">Dark Theme</md-button>
+                        <md-button md-theme="light" ng-click="setTheme('light')">Light Theme</md-button>
+                        <md-button md-theme="dark" ng-click="setTheme('dark')">Dark Theme</md-button>
                     </div>
                     <div layout="row" ng-hide="driveAuth" layout-align="center center">
                         <md-button ng-click="handleAuthClick(event)">Link to Google</md-button>
@@ -170,7 +162,28 @@
                 </md-dialog>
             </div>
         </div>
-        <md-button class="md-fab md-fab-bottom-right" style="position:fixed" ng-show="!showSearch&&!showNewAssignment" ng-click="showNewAssignment=true">
+        <div style="visibility: hidden">
+            <div class="md-dialog-container" id="about">
+                <md-dialog layout-padding>
+                    <h1>About</h1>
+                    <p>
+                        Procrastinator is a simple online planner designed to minimize procrastination.
+                    </p>
+                    <h2>Help</h2>
+                    <p>
+                        Add assignments using the add button on the bottom right. <br>
+                        Enter a name, short description, and due date for the assignment, and press the create button. <br>
+                        Edit <md-icon md-font-library="material-icons">edit</md-icon> or remove <md-icon md-font-library="material-icons">delete</md-icon> assignments by clicking on their icon. <br>
+                        Changes are saved locally for this browser. Sync with your other devices by signing into google in the settings menu.
+                    </p>
+                    <h2>Contact</h2>
+                    <p>
+                        Send bug reports and feature requests to <a href="mailto:procrastinatorapp@googlegroups.com" target="_blank">procrastinatorapp@googlegroups.com</a>.
+                    </p>
+                </md-dialog>
+            </div>
+        </div>
+        <md-button class="md-fab md-fab-bottom-right" style="position:fixed" ng-show="!showSearch&&!creating" ng-click="showNewAssignment()">
             <md-icon md-font-library="material-icons">add</md-icon>
         </md-button>
     </md-content>

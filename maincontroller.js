@@ -1,21 +1,27 @@
 app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialog){
     window.scope = $scope;
-    $scope.theme="light";
     $scope.undoAssignment = {};
     $scope.newAssignment = {};
 
     if(localStorage.getItem("assignments")==null){
-        localStorage.setItem("assignments", "[]")
+        localStorage.setItem("assignments", "[]");
     }
-    function generateID() {
-        var S4 = function() {
-            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-        };
-        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    if(localStorage.getItem("theme")==null){
+        localStorage.setItem("theme", "light");
     }
     $scope.assignments = JSON.parse(localStorage.getItem("assignments"));
+    $scope.theme = localStorage.getItem("theme");
+
+    $scope.toggleSearch = function(){
+        $scope.showSearch=!$scope.showSearch;
+    }
+    $scope.showNewAssignment = function(){
+        $scope.creating = true;
+        $scope.update();
+        window.scrollTo(0,0);
+    }
     $scope.hideNewAssignment = function(){
-        $scope.showNewAssignment = false;
+        $scope.creating = false;
         $scope.update();
     }
     $scope.addAssignment = function(){
@@ -26,7 +32,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         assignment.id - generateID();
         $scope.assignments.push(assignment);
         $scope.newAssignment = {};
-        $scope.showNewAssignment = false;
+        $scope.creating = false;
         if($scope.driveLoaded){
             $scope.updateFile($scope.fileId,$scope.assignments);
         }
@@ -107,15 +113,19 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     $scope.showSideNav = function(){
         $mdSidenav('left').toggle();
     }
-    $scope.showSettings = function(ev) {
+    $scope.showDialog = function(ev, dialog) {
         $mdDialog.show({
             controller: DialogController,
-            contentElement: '#settings',
+            contentElement: dialog,
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose: true
         });
     };
+    $scope.setTheme = function(theme){
+        $scope.theme = theme;
+        localStorage.setItem("theme", theme);
+    }
     $scope.exportData = function(){
         $scope.exports = JSON.stringify($scope.assignments);
         $scope.export = true;
