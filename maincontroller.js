@@ -29,6 +29,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         assignment.name = $scope.newAssignment.name;
         assignment.description = $scope.newAssignment.description;
         assignment.dueDate = $scope.newAssignment.dueDate.toISOString();
+        assignment.approximate = $scope.newAssignment.approximate;
         assignment.id = generateID();
         $scope.assignments.push(assignment);
         $scope.newAssignment = {};
