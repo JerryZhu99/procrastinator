@@ -20,6 +20,20 @@ app.config(function($mdThemingProvider) {
     $mdThemingProvider.setDefaultTheme('light');
 
 });
+app.directive('focusMe', function($timeout) {
+  return {
+    link: function(scope, element, attrs) {
+      scope.$watch(attrs.focusMe, function(value) {
+        if(value === true) {
+          console.log('value=',value);
+          $timeout(function() {
+            element[0].focus();
+          });
+        }
+      });
+    }
+  };
+});
 function generateID() {
     var S4 = function() {
         return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
