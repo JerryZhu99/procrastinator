@@ -18,7 +18,7 @@
     <title>Procrastinator</title>
 </head>
 <body ng-app="App" ng-controller="mainController" md-theme="{{ theme }}" ng-cloak>
-    <md-content style="min-height:100%" layout="column" layout-align:"start">
+    <md-content style="min-height:100%" layout="column" layout-align="start">
         <md-toolbar class="md-hue-2" ng-show="!showSearch">
             <div class="md-toolbar-tools">
                 <md-button class="md-icon-button" ng-click="showSideNav()" aria-label="Settings">
@@ -66,7 +66,7 @@
                             &nbsp; Settings
                         </div>
                     </md-list-item>
-                    <md-list-item  ng-click="showDialog($event, '#about')">
+                    <md-list-item  ng-click="showDialog($event, '#about', true)">
                         <div class="md-list-item-text" layout="row">
                             <md-icon md-font-library="material-icons">info</md-icon>
                             &nbsp; About
@@ -99,6 +99,10 @@
                             <textarea ng-model="newAssignment.description" rows="3" md-select-on-focus></textarea>
                         </md-input-container>
                         <md-datepicker ng-model="newAssignment.dueDate" md-placeholder="Enter due date"></md-datepicker>
+                        &nbsp;
+                        <md-checkbox ng-model="newAssignment.approximate" aria-label="Approximate">
+                            Approximate
+                        </md-checkbox>
                         <md-card-actions layout="row" layout-align="end center">
                             <md-button class="md-primary" ng-click="addAssignment()">Create</md-button>
                         </md-card-actions>
@@ -147,6 +151,10 @@
                             <textarea ng-model="assignment.editedDescription" rows="3" md-select-on-focus></textarea>
                         </md-input-container>
                         <md-datepicker ng-model="assignment.editedDueDate" md-placeholder="Enter due date"></md-datepicker>
+                        &nbsp;
+                        <md-checkbox ng-model="assignment.editedApproximate" aria-label="Approximate">
+                            Approximate
+                        </md-checkbox>
                     </md-card-content>
                     <md-card-actions layout="row" layout-align="end center" ng-show="assignment.editing">
                         <md-button class="md-primary" ng-click="editAssignment(assignment,true)" aria-label="Save">
@@ -172,27 +180,41 @@
         </div>
         <div style="visibility: hidden">
             <div class="md-dialog-container" id="about">
-                <md-dialog layout-padding>
-                    <h1>About</h1>
-                    <p>
-                        Procrastinator is a simple online planner designed to minimize procrastination.
-                    </p>
-                    <h2>Help</h2>
-                    <p>
-                        Add assignments using the add button on the bottom right. <br>
-                        Enter a name, short description, and due date for the assignment, and press the create button. <br>
-                        Edit <md-icon md-font-library="material-icons">edit</md-icon> or remove <md-icon md-font-library="material-icons">delete</md-icon> assignments by clicking on their icon. <br>
-                        Changes are saved locally for this browser. Sync with your other devices by signing into google in the settings menu.
-                    </p>
-                    <h2>Attribution</h2>
-                    <p>
-                        Icons generated using
-                        <a href="https://romannurik.github.io/AndroidAssetStudio/">Android Asset Studio</a> by <a href="https://github.com/romannurik">Roman Nurik</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.
-                    </p>
-                    <h2>Contact</h2>
-                    <p>
-                        Send bug reports and feature requests to <a href="mailto:procrastinatorapp@googlegroups.com" target="_blank">procrastinatorapp@googlegroups.com</a>.
-                    </p>
+                <md-dialog>
+                    <md-toolbar class="md-hue-2">
+                        <div class="md-toolbar-tools">
+                            <h2>
+                                <span>About</span>
+                            </h2>
+                            <span flex></span>
+                            <md-button class="md-icon-button" ng-click="hideDialog()" aria-label="Close">
+                                <md-icon md-font-library="material-icons">close</md-icon>
+                            </md-button>
+                        </div>
+                    </md-toolbar>
+                    <md-dialog-content style="margin-right:-1px">
+                        <div class="md-dialog-content">
+                            <p class="md-body-1">
+                                Procrastinator is a simple online planner designed to minimize procrastination.
+                            </p>
+                            <h2 class="md-headline">Help</h2>
+                            <p class="md-body-1">
+                                Add assignments using the add button on the bottom right. <br>
+                                Enter a name, short description, and due date for the assignment, and press the create button. <br>
+                                Edit <md-icon md-font-library="material-icons">edit</md-icon> or remove <md-icon md-font-library="material-icons">delete</md-icon> assignments by clicking on their icon. <br>
+                                Changes are saved locally for this browser. Sync with your other devices by signing into google in the settings menu.
+                            </p>
+                            <h2 class="md-headline">Attribution</h2>
+                            <p class="md-body-1">
+                                Icons generated using
+                                <a class="md-accent" href="https://romannurik.github.io/AndroidAssetStudio/">Android Asset Studio</a> by <a class="md-accent" href="https://github.com/romannurik">Roman Nurik</a>, licensed under <a class="md-accent" href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
+                            </p>
+                            <h2 class="md-headline">Contact</h2>
+                            <p class="md-body-1">
+                                Send bug reports and feature requests to <a class="md-accent" href="mailto:procrastinatorapp@googlegroups.com" target="_blank">procrastinatorapp@googlegroups.com</a>.
+                            </p>
+                        </div>
+                    </md-dialog-content>
                 </md-dialog>
             </div>
         </div>

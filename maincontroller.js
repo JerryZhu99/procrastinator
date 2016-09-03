@@ -29,7 +29,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         assignment.name = $scope.newAssignment.name;
         assignment.description = $scope.newAssignment.description;
         assignment.dueDate = $scope.newAssignment.dueDate.toISOString();
-        assignment.id - generateID();
+        assignment.id = generateID();
         $scope.assignments.push(assignment);
         $scope.newAssignment = {};
         $scope.creating = false;
@@ -62,11 +62,13 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
             assignment.name = assignment.editedName;
             assignment.description = assignment.editedDescription;
             assignment.dueDate = assignment.editedDueDate;
+            assignment.approximate = assignment.editedApproximate;
         }
         assignment.editing = undefined;
         assignment.editedName = undefined;
         assignment.editedDescription = undefined;
         assignment.editedDueDate = undefined;
+        assignment.editedApproximate = undefined;
         if($scope.driveLoaded){
             $scope.updateFile($scope.fileId,$scope.assignments);
         }
@@ -92,7 +94,11 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         });
     }
     $scope.getDate = function(assignment){
-        return new Date(assignment.dueDate).toDateString();
+        if(assignment.approximate){
+            return "~" + new Date(assignment.dueDate).toDateString();
+        }else{
+            return new Date(assignment.dueDate).toDateString();
+        }
     }
     $scope.getDateDiff = function(assignment){
         var milliseconds = (new Date(assignment.dueDate).getTime() - new Date().getTime());
@@ -100,28 +106,39 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         var minutes = seconds/60;
         var hours = minutes/60;
         var days = Math.ceil(hours/24);
-        if(days < 0){
-            return "Overdue"
-        }else if(days==0){
-            return "Due today"
-        }else if(days==1){
-            return "Due tomorrow"
+        if(assignment.approximate){
+            if(days < 1){
+                return "Due soon"
+            }else{
+                return "Due in ~"+days+" days"
+            }
         }else{
-            return "Due in "+days+" days"
+            if(days < 0){
+                return "Overdue"
+            }else if(days==0){
+                return "Due today"
+            }else if(days==1){
+                return "Due tomorrow"
+            }else{
+                return "Due in "+days+" days"
+            }
         }
     }
     $scope.showSideNav = function(){
         $mdSidenav('left').toggle();
     }
-    $scope.showDialog = function(ev, dialog) {
+    $scope.showDialog = function(ev, dialog, fullscreen) {
         $mdDialog.show({
             controller: DialogController,
             contentElement: dialog,
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose: true,
-            fullscreen:true
+            fullscreen:fullscreen
         });
+    };
+    $scope.hideDialog = function() {
+        $mdDialog.hide();
     };
     $scope.setTheme = function(theme){
         $scope.theme = theme;
