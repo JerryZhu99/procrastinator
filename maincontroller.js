@@ -119,7 +119,8 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
             contentElement: dialog,
             parent: angular.element(document.body),
             targetEvent: ev,
-            clickOutsideToClose: true
+            clickOutsideToClose: true,
+            fullscreen:true
         });
     };
     $scope.setTheme = function(theme){
