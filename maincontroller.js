@@ -35,7 +35,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         $scope.newAssignment = {};
         $scope.creating = false;
         if($scope.driveLoaded){
-            $scope.updateFile($scope.fileId,$scope.assignments);
+            $scope.updateFile($scope.fileId,$scope.assignments, $scope.checkError);
         }
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
     }
@@ -43,7 +43,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         var index = $scope.assignments.indexOf(assignment);
         $scope.undoAssignment = $scope.assignments.splice(index, 1)[0];
         if($scope.driveLoaded){
-            $scope.updateFile($scope.fileId,$scope.assignments);
+            $scope.updateFile($scope.fileId,$scope.assignments, $scope.checkError);
         }
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
         $scope.showUndo();
@@ -71,7 +71,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         assignment.editedDueDate = undefined;
         assignment.editedApproximate = undefined;
         if($scope.driveLoaded){
-            $scope.updateFile($scope.fileId,$scope.assignments);
+            $scope.updateFile($scope.fileId,$scope.assignments, $scope.checkError);
         }
         $scope.update();
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
@@ -86,7 +86,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
             if ( response == 'ok' ) {
                 $scope.assignments.push($scope.undoAssignment);
                 if($scope.driveLoaded){
-                    $scope.updateFile($scope.fileId,$scope.assignments);
+                    $scope.updateFile($scope.fileId,$scope.assignments, $scope.checkError);
                 }
                 localStorage.setItem("assignments", JSON.stringify($scope.assignments));
                 $mdToast.hide(toast);
@@ -145,10 +145,24 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         $scope.theme = theme;
         localStorage.setItem("theme", theme);
     }
-    $scope.exportData = function(){
-        $scope.exports = JSON.stringify($scope.assignments);
-        $scope.export = true;
-    };
+    $scope.checkError = function(file){
+        if(file.error){
+            console.log(file.error.message);
+            var toast = $mdToast.simple()
+            .textContent('Google Drive Error: '+file.error.message)
+            .action('RETRY')
+            .highlightAction(true)
+            .position('bottom right');
+            $mdToast.show(toast).then(function(response) {
+                if ( response == 'ok' ) {
+                    if($scope.driveLoaded){
+                        $scope.updateFile($scope.fileId,$scope.assignments, $scope.checkError);
+                    }
+                    $mdToast.hide(toast);
+                }
+            });
+        }
+    }
     $scope.driveAuth = true;
     $scope.driveLoaded = false;
     $scope.checkAuth = function() {
@@ -187,7 +201,10 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
             }else{
                 $scope.fileId = response.files[0].id;
                 $scope.getFile($scope.fileId, function(file){
-                    console.log(file);
+                    if(file.error){
+                        $scope.checkError(file);
+                        return;
+                    }
                     $scope.assignments = file;
                     $scope.$apply();
                     localStorage.setItem("assignments", JSON.stringify($scope.assignments));
