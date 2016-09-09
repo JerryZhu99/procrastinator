@@ -200,15 +200,30 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
                 })
             }else{
                 $scope.fileId = response.files[0].id;
-                $scope.getFile($scope.fileId, function(file){
+                var checkGetError = function(file){
                     if(file.error){
-                        $scope.checkError(file);
+                        console.log(file.error.message);
+                        var toast = $mdToast.simple()
+                        .textContent('Google Drive Error: '+file.error.message)
+                        .action('RETRY')
+                        .highlightAction(true)
+                        .position('bottom right');
+                        $mdToast.show(toast).then(function(response) {
+                            if ( response == 'ok' ) {
+                                if($scope.driveLoaded){
+                                    $scope.getFile($scope.fileId, checkGetError);
+                                }
+                                $mdToast.hide(toast);
+                            }
+                        });
                         return;
                     }
+                    console.log(file);
                     $scope.assignments = file;
                     $scope.$apply();
                     localStorage.setItem("assignments", JSON.stringify($scope.assignments));
-                });
+                };
+                $scope.getFile($scope.fileId,checkGetError);
             }
         });
     }
