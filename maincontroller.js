@@ -41,6 +41,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     }
     $scope.hideNewAssignment = function(){
         $scope.creating = false;
+        $scope.newAssignment = {};
         $scope.update();
     }
     $scope.addAssignment = function(){
