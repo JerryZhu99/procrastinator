@@ -3,7 +3,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     $scope.undoAssignment = {};
     $scope.newAssignment = {};
     $scope.lightOptions = ["#FFFFFF","#E0E0E0","#FF8A80","#B388FF","#8C9EFF","#82B1FF","#A7FFEB","#B9F6CA","#F4FF81","#FFD180"];
-    $scope.darkOptions = ["#424242","#757575","#4527A0","#6A1B9A","#283593","#1565C0","#00695C","#2E7D32","#827717","#E65100"];
+    $scope.darkOptions = ["#424242","#757575","#C62828","#4527A0","#283593","#1565C0","#00695C","#2E7D32","#827717","#E65100"];
     $scope.options = $scope.lightOptions;
 
     if(localStorage.getItem("assignments")==null){
