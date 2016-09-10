@@ -44,3 +44,10 @@ md-sidenav.md-closed.md-locked-open-add-active {
     max-height: 0;
     opacity: 0;
 }
+.dark *{
+    border-color: #FFFFFF !important;
+}
+.dark *>.color-palette{
+    border-color: #FFFFFF !important;
+    background-color: #424242 !important;
+}

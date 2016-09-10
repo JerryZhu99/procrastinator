@@ -2,6 +2,9 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     window.scope = $scope;
     $scope.undoAssignment = {};
     $scope.newAssignment = {};
+    $scope.lightOptions = ["#FFFFFF","#E0E0E0","#FF8A80","#B388FF","#8C9EFF","#82B1FF","#A7FFEB","#B9F6CA","#F4FF81","#FFD180"];
+    $scope.darkOptions = ["#424242","#757575","#4527A0","#6A1B9A","#283593","#1565C0","#00695C","#2E7D32","#827717","#E65100"];
+    $scope.options = $scope.lightOptions;
 
     if(localStorage.getItem("assignments")==null){
         localStorage.setItem("assignments", "[]");
@@ -11,7 +14,23 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     }
     $scope.assignments = JSON.parse(localStorage.getItem("assignments"));
     $scope.theme = localStorage.getItem("theme");
-
+    if($scope.theme=="dark"){
+        $scope.options = $scope.darkOptions;
+        for(var i=0;i<$scope.assignments.length;i++){
+            var a = $scope.assignments[i];
+            var index = $scope.lightOptions.indexOf(a.color);
+            if(index>=0)
+            a.color = $scope.darkOptions[index];
+        }
+    }else{
+        $scope.options = $scope.lightOptions;
+        for(var i=0;i<$scope.assignments.length;i++){
+            var a = $scope.assignments[i];
+            var index = $scope.darkOptions.indexOf(a.color);
+            if(index>=0)
+            a.color = $scope.lightOptions[index]
+        }
+    }
     $scope.toggleSearch = function(){
         $scope.showSearch=!$scope.showSearch;
     }
@@ -30,6 +49,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         assignment.description = $scope.newAssignment.description;
         assignment.dueDate = $scope.newAssignment.dueDate.toISOString();
         assignment.approximate = $scope.newAssignment.approximate;
+        assignment.color = $scope.newAssignment.color;
         assignment.id = generateID();
         $scope.assignments.push(assignment);
         $scope.newAssignment = {};
@@ -62,7 +82,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         if(save){
             assignment.name = assignment.editedName;
             assignment.description = assignment.editedDescription;
-            assignment.dueDate = assignment.editedDueDate;
+            assignment.dueDate = new Date(assignment.editedDueDate).toISOString();
             assignment.approximate = assignment.editedApproximate;
         }
         assignment.editing = undefined;
@@ -142,8 +162,27 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         $mdDialog.hide();
     };
     $scope.setTheme = function(theme){
-        $scope.theme = theme;
-        localStorage.setItem("theme", theme);
+        if($scope.theme != theme){
+            $scope.theme = theme;
+            localStorage.setItem("theme", theme);
+            if(theme=="dark"){
+                $scope.options = $scope.darkOptions;
+                for(var i=0;i<$scope.assignments.length;i++){
+                    var a = $scope.assignments[i];
+                    var index = $scope.lightOptions.indexOf(a.color);
+                    if(index>=0)
+                    a.color = $scope.darkOptions[index];
+                }
+            }else{
+                $scope.options = $scope.lightOptions;
+                for(var i=0;i<$scope.assignments.length;i++){
+                    var a = $scope.assignments[i];
+                    var index = $scope.darkOptions.indexOf(a.color);
+                    if(index>=0)
+                    a.color = $scope.lightOptions[index]
+                }
+            }
+        }
     }
     $scope.checkError = function(file){
         if(file.error){
@@ -220,6 +259,23 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
                     }
                     console.log(file);
                     $scope.assignments = file;
+                    if($scope.theme=="dark"){
+                        $scope.options = $scope.darkOptions;
+                        for(var i=0;i<$scope.assignments.length;i++){
+                            var a = $scope.assignments[i];
+                            var index = $scope.lightOptions.indexOf(a.color);
+                            if(index>=0)
+                            a.color = $scope.darkOptions[index];
+                        }
+                    }else{
+                        $scope.options = $scope.lightOptions;
+                        for(var i=0;i<$scope.assignments.length;i++){
+                            var a = $scope.assignments[i];
+                            var index = $scope.darkOptions.indexOf(a.color);
+                            if(index>=0)
+                            a.color = $scope.lightOptions[index]
+                        }
+                    }
                     $scope.$apply();
                     localStorage.setItem("assignments", JSON.stringify($scope.assignments));
                 };
