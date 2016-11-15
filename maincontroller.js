@@ -5,6 +5,10 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     $scope.lightOptions = ["#FFFFFF","#E0E0E0","#FF8A80","#B388FF","#8C9EFF","#82B1FF","#A7FFEB","#B9F6CA","#F4FF81","#FFD180"];
     $scope.darkOptions = ["#424242","#757575","#C62828","#4527A0","#283593","#1565C0","#00695C","#2E7D32","#827717","#E65100"];
     $scope.options = $scope.lightOptions;
+    $scope.priorities = [{name:"Maximum",icon:"error",color:"#F44336"},
+    {name:"High",icon:"warning",color:"#FF9800"},
+    {name:"Medium",icon:"info_outline",color:"#9E9E9E"},
+    {name:"Low",icon:"low_priority",color:"#3F51B5"}]
 
     if(localStorage.getItem("assignments")==null){
         localStorage.setItem("assignments", "[]");
@@ -36,13 +40,11 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     }
     $scope.showNewAssignment = function(){
         $scope.creating = true;
-        $scope.update();
         window.scrollTo(0,0);
     }
     $scope.hideNewAssignment = function(){
         $scope.creating = false;
         $scope.newAssignment = {};
-        $scope.update();
     }
     $scope.addAssignment = function(){
         var assignment = {}
@@ -75,8 +77,6 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         assignment.editedName = assignment.name;
         assignment.editedDescription = assignment.description;
         assignment.editedDueDate = new Date(assignment.dueDate);
-
-        $scope.update();
     }
     $scope.editAssignment = function(assignment, save){
         if(!assignment.id){assignment.id = generateID();}
@@ -94,7 +94,13 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         if($scope.driveLoaded){
             $scope.updateFile($scope.fileId,$scope.assignments, $scope.checkError);
         }
-        $scope.update();
+        localStorage.setItem("assignments", JSON.stringify($scope.assignments));
+    }
+    $scope.setPriority = function(assignment,priority){
+        assignment.priority = priority;
+        if($scope.driveLoaded){
+            $scope.updateFile($scope.fileId,$scope.assignments, $scope.checkError);
+        }
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
     }
     $scope.showUndo = function(){
@@ -111,7 +117,6 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
                 }
                 localStorage.setItem("assignments", JSON.stringify($scope.assignments));
                 $mdToast.hide(toast);
-                $scope.update();
             }
         });
     }

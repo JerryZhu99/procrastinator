@@ -112,12 +112,12 @@
                     <md-button class="md-icon-button md-secondary" aria-label="Settings" ng-click="hideNewAssignment()">
                         <md-icon md-font-library="material-icons">close</md-icon>
                     </md-button>
+
                 </md-list-item>
-                <md-list-item class="md-2-line" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' track by assignment.id" ng-click="null">
+                <md-list-item class="md-2-line" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' track by assignment.id">
 
                     <div class="md-list-item-text" ng-hide="assignment.editing">
                         <h3>
-                            <md-icon md-font-library="material-icons">info</md-icon>
                             {{assignment.name}}
                         </h3>
                         <p>
@@ -127,6 +127,16 @@
                     <p class="md-secondary" ng-hide="assignment.editing">
                         {{getDateDiff(assignment)}}
                     </p>
+                    <md-menu class="md-secondary" md-position-mode="target-right target"  ng-hide="assignment.editing">
+                        <md-button class="md-icon-button">
+                            <md-icon md-font-library="material-icons" style="color:{{assignment.priority.color}}">{{assignment.priority.icon}}</md-icon>
+                        </md-button>
+                        <md-menu-content width="1">
+                            <md-button class="md-icon-button" ng-repeat="priority in priorities" ng-click="setPriority(assignment, priority)">
+                                <md-icon md-font-library="material-icons" style="color:{{priority.color}}">{{priority.icon}}</md-icon>
+                            </md-button>
+                        </md-menu-content>
+                    </md-menu>
                     <md-button class="md-icon-button md-secondary" ng-click="startEdit(assignment)" aria-label="Edit"  ng-hide="assignment.editing">
                         <md-icon md-font-library="material-icons">edit</md-icon>
                     </md-button>
@@ -143,7 +153,6 @@
                             <input ng-model="assignment.editedDescription" md-select-on-focus></input>
                         </md-input-container>
                     </div>
-
                     <md-datepicker class="md-secondary" ng-model="assignment.editedDueDate" md-placeholder="Enter due date" ng-show="assignment.editing"></md-datepicker>
                     &nbsp;
                     <md-button class="md-secondary" ng-click="editAssignment(assignment,true)" aria-label="Save" ng-show="assignment.editing">
