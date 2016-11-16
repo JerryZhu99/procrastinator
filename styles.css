@@ -13,8 +13,9 @@ md-sidenav.md-closed.md-locked-open-add-active {
     width: 100%;
 }
 .card-container{
-    margin: auto;
+    margin: 24px auto auto auto;
     width: 100%;
+    box-shadow: 0 -1px 0 #e0e0e0,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
 }
 @media only screen and (min-width: 600px) {
     .tile{
@@ -50,4 +51,7 @@ md-sidenav.md-closed.md-locked-open-add-active {
 .dark *>.color-palette{
     border-color: #FFFFFF !important;
     background-color: #424242 !important;
+}
+.md-button{
+    overflow: visible;
 }

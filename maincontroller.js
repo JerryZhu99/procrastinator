@@ -5,11 +5,17 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     $scope.lightOptions = ["#FFFFFF","#E0E0E0","#FF8A80","#B388FF","#8C9EFF","#82B1FF","#A7FFEB","#B9F6CA","#F4FF81","#FFD180"];
     $scope.darkOptions = ["#424242","#757575","#C62828","#4527A0","#283593","#1565C0","#00695C","#2E7D32","#827717","#E65100"];
     $scope.options = $scope.lightOptions;
-    $scope.priorities = [{name:"Maximum",icon:"error",color:"#F44336"},
-    {name:"High",icon:"warning",color:"#FF9800"},
-    {name:"Medium",icon:"info_outline",color:"#9E9E9E"},
-    {name:"Low",icon:"low_priority",color:"#3F51B5"}]
+    $scope.priorities = [{name:"Maximum",icon:"error",color:"#F44336",rank:1},
+    {name:"High",icon:"warning",color:"#FF9800",rank:2},
+    {name:"Medium",icon:"info_outline",color:"#9E9E9E",rank:3},
+    {name:"Low",icon:"low_priority",color:"#3F51B5",rank:4}];
 
+    if(localStorage.getItem("sort")==null){
+        $scope.sort = ['dueDate','priority.rank'];
+        localStorage.setItem("sort", JSON.stringify(['dueDate','priority.rank']));
+    }else{
+        $scope.sort = JSON.parse(localStorage.getItem("sort"));
+    }
     if(localStorage.getItem("assignments")==null){
         localStorage.setItem("assignments", "[]");
     }
@@ -35,6 +41,15 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
             a.color = $scope.lightOptions[index]
         }
     }
+    $scope.changeColor = function(){
+        if($scope.driveLoaded){
+            $scope.updateFile($scope.fileId,$scope.assignments, $scope.checkError);
+        }
+        localStorage.setItem("assignments", JSON.stringify($scope.assignments));
+    }
+    $scope.saveSort = function(){
+        localStorage.setItem("sort",JSON.stringify($scope.sort));
+    }
     $scope.toggleSearch = function(){
         $scope.showSearch=!$scope.showSearch;
     }
@@ -53,6 +68,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         assignment.dueDate = $scope.newAssignment.dueDate.toISOString();
         assignment.approximate = $scope.newAssignment.approximate;
         assignment.color = $scope.newAssignment.color;
+        assignment.priority = $scope.priorities[2];
         assignment.id = generateID();
         $scope.assignments.push(assignment);
         $scope.newAssignment = {};
@@ -70,7 +86,6 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
         }
         localStorage.setItem("assignments", JSON.stringify($scope.assignments));
         $scope.showUndo();
-        $scope.removeBrick();
     }
     $scope.startEdit = function(assignment){
         assignment.editing = true;

@@ -91,9 +91,19 @@
         <div class="loading" ng-hide="(driveAuth&&driveLoaded)||!driveAuth">
             <md-progress-linear md-mode="indeterminate"></md-progress-linear>
         </div>
-        <md-content class="card-container" flex="100">
+
+        <md-content class="card-container">
+            <md-toolbar class="md-hue-2" md-scroll-shrink>
+                <div class="md-toolbar-tools">
+                    <span>Assignments</span>
+                    <span flex></span>
+                    <span>Sorting by {{sort[0]=="dueDate"?"due date":"priority"}}&nbsp;&nbsp;</span>
+                    <md-switch class="md-primary" ng-model="sort" ng-true-value="['priority.rank','dueDate']" ng-false-value="['dueDate','priority.rank']" ng-change="saveSort()">
+                    </md-switch>
+                </div>
+            </md-toolbar>
             <md-list flex>
-                <md-list-item class="md-2-line" ng-if="creating&&!showSearch">
+                <md-list-item class="md-2-line" ng-if="creating&&!showSearch" style="background-color:{{newAssignment.color}}; overflow:visible">
                     <div class="md-list-item-text">
                         <md-input-container class="md-block" flex-gt-xs>
                             <label>Name</label>
@@ -106,6 +116,9 @@
                     </div>
                     <md-datepicker class="md-secondary" ng-model="newAssignment.dueDate" md-placeholder="Enter due date"></md-datepicker>
                     &nbsp;
+                    <md-input-container class="md-secondary">
+                        <color-picker style="line-height:0" color="newAssignment.color" options="options"></color-picker>
+                    </md-input-container>
                     <md-button class="md-secondary" ng-click="addAssignment()" aria-label="Save">
                         Save
                     </md-button>
@@ -114,9 +127,10 @@
                     </md-button>
 
                 </md-list-item>
-                <md-list-item class="md-2-line" ng-repeat="assignment in assignments|filter:search|orderBy:'dueDate' track by assignment.id">
+                <md-divider inset></md-divider>
+                <md-list-item class="md-2-line" ng-repeat="assignment in assignments|filter:search|orderBy:sort track by assignment.id" style="background-color:{{assignment.color}}; overflow:visible" ng-click="null">
 
-                    <div class="md-list-item-text" ng-hide="assignment.editing">
+                    <div class="md-list-item-text" ng-if="!assignment.editing">
                         <h3>
                             {{assignment.name}}
                         </h3>
@@ -124,43 +138,51 @@
                             {{assignment.description}}
                         </p>
                     </div>
-                    <p class="md-secondary" ng-hide="assignment.editing">
+                    <p class="md-secondary" ng-if="!assignment.editing">
                         {{getDateDiff(assignment)}}
                     </p>
-                    <md-menu class="md-secondary" md-position-mode="target-right target"  ng-hide="assignment.editing">
-                        <md-button class="md-icon-button">
-                            <md-icon md-font-library="material-icons" style="color:{{assignment.priority.color}}">{{assignment.priority.icon}}</md-icon>
-                        </md-button>
-                        <md-menu-content width="1">
-                            <md-button class="md-icon-button" ng-repeat="priority in priorities" ng-click="setPriority(assignment, priority)">
-                                <md-icon md-font-library="material-icons" style="color:{{priority.color}}">{{priority.icon}}</md-icon>
-                            </md-button>
-                        </md-menu-content>
-                    </md-menu>
-                    <md-button class="md-icon-button md-secondary" ng-click="startEdit(assignment)" aria-label="Edit"  ng-hide="assignment.editing">
+
+                    <md-button class="md-icon-button md-secondary" ng-click="startEdit(assignment)" aria-label="Edit" ng-if="!assignment.editing">
                         <md-icon md-font-library="material-icons">edit</md-icon>
                     </md-button>
-                    <md-button class="md-icon-button md-secondary" ng-click="removeAssignment(assignment)" aria-label="Delete"  ng-hide="assignment.editing">
+                    <md-button class="md-icon-button md-secondary" ng-click="removeAssignment(assignment)" aria-label="Delete"  ng-if="!assignment.editing">
                         <md-icon md-font-library="material-icons">delete</md-icon>
                     </md-button>
-                    <div class="md-list-item-text" ng-show="assignment.editing">
-                        <md-input-container class="md-block" flex-gt-xs ng-show="assignment.editing">
+                    <md-menu class="md-secondary" ng-if="!assignment.editing">
+                        <md-button md-menu-origin class="md-icon-button md-raised" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-font-library="material-icons" style="color:{{assignment.priority.color}}">{{assignment.priority.icon}}</md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item ng-repeat="priority in priorities">
+                                <md-button class="md-button" ng-click="setPriority(assignment, priority)" layout="row">
+                                    <md-icon md-menu-align-target md-font-library="material-icons" style="color:{{priority.color}}">{{priority.icon}}</md-icon>
+                                    {{priority.name}} priority
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                    <div class="md-list-item-text" ng-if="assignment.editing">
+                        <md-input-container class="md-block" flex-gt-xs ng-if="assignment.editing">
                             <label>Name</label>
                             <input ng-model="assignment.editedName">
                         </md-input-container>
-                        <md-input-container class="md-block" flex-gt-xs ng-show="assignment.editing">
+                        <md-input-container class="md-block" flex-gt-xs ng-if="assignment.editing">
                             <label>Description</label>
                             <input ng-model="assignment.editedDescription" md-select-on-focus></input>
                         </md-input-container>
                     </div>
-                    <md-datepicker class="md-secondary" ng-model="assignment.editedDueDate" md-placeholder="Enter due date" ng-show="assignment.editing"></md-datepicker>
+                    <md-datepicker class="md-secondary" ng-model="assignment.editedDueDate" md-placeholder="Enter due date" ng-if="assignment.editing"></md-datepicker>
                     &nbsp;
-                    <md-button class="md-secondary" ng-click="editAssignment(assignment,true)" aria-label="Save" ng-show="assignment.editing">
+                    <md-input-container class="md-secondary">
+                        <color-picker style="line-height:0" color="assignment.color" options="options" ng-if="assignment.editing"></color-picker>
+                    </md-input-container>
+                    <md-button class="md-secondary" ng-click="editAssignment(assignment,true)" aria-label="Save" ng-if="assignment.editing">
                         Save
                     </md-button>
-                    <md-button class="md-icon-button md-secondary" aria-label="Settings" ng-click="editAssignment(assignment, false)" ng-show="assignment.editing">
+                    <md-button class="md-icon-button md-secondary" aria-label="Settings" ng-click="editAssignment(assignment, false)" ng-if="assignment.editing">
                         <md-icon md-font-library="material-icons">close</md-icon>
                     </md-button>
+                    <md-divider inset></md-divider>
                 </md-list-item>
             </md-list>
         </md-content>
