@@ -92,7 +92,7 @@
             <md-progress-linear md-mode="indeterminate"></md-progress-linear>
         </div>
 
-        <md-content class="card-container">
+        <md-content class="card-container md-whiteframe-2dp">
             <md-toolbar class="md-hue-2" md-scroll-shrink>
                 <div class="md-toolbar-tools">
                     <span hide-xs>Assignments</span>
@@ -157,7 +157,6 @@
                 </md-list-item>
                 <md-divider inset></md-divider>
                 <md-list-item class="md-2-line" ng-repeat="assignment in assignments|filter:search|orderBy:sort track by assignment.id" style="background-color:{{assignment.color}}; overflow:visible" ng-click="null">
-
                     <div class="md-list-item-text" ng-if="!assignment.editing">
                         <h3>
                             {{assignment.name}}
@@ -173,13 +172,13 @@
                         {{getDateDiff(assignment)}}
                     </p>
 
-                    <md-button class="md-icon-button md-secondary" ng-click="startEdit(assignment)" aria-label="Edit" ng-if="!assignment.editing" hide-xs>
+                    <md-button class="md-icon-button md-raised md-secondary" ng-click="startEdit(assignment)" aria-label="Edit" ng-if="!assignment.editing" hide-xs>
                         <md-icon md-font-library="material-icons">edit</md-icon>
                     </md-button>
-                    <md-button class="md-icon-button md-secondary" ng-click="removeAssignment(assignment)" aria-label="Delete"  ng-if="!assignment.editing" hide-xs>
+                    <md-button class="md-icon-button md-raised md-secondary" ng-click="removeAssignment(assignment)" aria-label="Delete"  ng-if="!assignment.editing" hide-xs>
                         <md-icon md-font-library="material-icons">delete</md-icon>
                     </md-button>
-                    <md-menu class="md-secondary" ng-if="!assignment.editing" hide-xs>
+                    <md-menu class="md-secondary" ng-if="!assignment.editing" hide-xs style="margin-left:5px">
                         <md-button md-menu-origin class="md-icon-button md-raised" ng-click="$mdOpenMenu($event)">
                             <md-icon md-font-library="material-icons" style="color:{{assignment.priority.color}}">{{assignment.priority.icon}}</md-icon>
                         </md-button>
@@ -192,20 +191,14 @@
                             </md-menu-item>
                         </md-menu-content>
                     </md-menu>
-                    <md-fab-speed-dial md-open="false" ng-class="'md-fling'" md-direction="left" ng-if="!assignment.editing" hide-gt-xs>
+                    <md-fab-speed-dial md-open="false" ng-class="'md-fling'" md-direction="left" ng-show="!assignment.editing" hide-gt-xs>
                         <md-fab-trigger>
                             <md-button aria-label="menu" class="md-fab md-mini" ng-click="open=!open">
                                 <md-icon md-font-library="material-icons">menu</md-icon>
                             </md-button>
                         </md-fab-trigger>
-                        <md-fab-actions>
-                            <md-button class="md-fab md-raised md-mini" ng-click="startEdit(assignment)" aria-label="Edit">
-                                <md-icon md-font-library="material-icons">edit</md-icon>
-                            </md-button>
-                            <md-button class="md-fab md-raised md-mini" ng-click="removeAssignment(assignment)" aria-label="Delete">
-                                <md-icon md-font-library="material-icons">delete</md-icon>
-                            </md-button>
-                            <md-menu ng-if="!assignment.editing" hide-xs>
+                        <md-fab-actions style="width:0">
+                            <md-menu ng-if="!assignment.editing">
                                 <md-button md-menu-origin  class="md-fab md-raised md-mini" ng-click="$mdOpenMenu($event)">
                                     <md-icon md-font-library="material-icons" style="color:{{assignment.priority.color}}">{{assignment.priority.icon}}</md-icon>
                                 </md-button>
@@ -218,6 +211,12 @@
                                     </md-menu-item>
                                 </md-menu-content>
                             </md-menu>
+                            <md-button class="md-fab md-raised md-mini" ng-click="removeAssignment(assignment)" aria-label="Delete">
+                                <md-icon md-font-library="material-icons">delete</md-icon>
+                            </md-button>
+                            <md-button class="md-fab md-raised md-mini" ng-click="startEdit(assignment)" aria-label="Edit">
+                                <md-icon md-font-library="material-icons">edit</md-icon>
+                            </md-button>
                         </md-fab-actions>
                     </md-fab-speed-dial>
                     <div class="md-list-item-text" ng-if="assignment.editing" hide-xs>
