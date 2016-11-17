@@ -9,7 +9,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     {name:"High",icon:"warning",color:"#FF9800",rank:2},
     {name:"Medium",icon:"info_outline",color:"#9E9E9E",rank:3},
     {name:"Low",icon:"low_priority",color:"#3F51B5",rank:4}];
-
+    $scope.open=false;
     if(localStorage.getItem("sort")==null){
         $scope.sort = ['dueDate','priority.rank'];
         localStorage.setItem("sort", JSON.stringify(['dueDate','priority.rank']));

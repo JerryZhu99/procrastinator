@@ -191,15 +191,15 @@
                             </md-menu-item>
                         </md-menu-content>
                     </md-menu>
-                    <md-fab-speed-dial md-open="false" ng-class="'md-fling'" md-direction="left" ng-show="!assignment.editing" hide-gt-xs>
+                    <md-fab-speed-dial class="md-scale" md-open="open" md-direction="left" ng-show="!assignment.editing" hide-gt-xs>
                         <md-fab-trigger>
-                            <md-button aria-label="menu" class="md-fab md-mini" ng-click="open=!open">
-                                <md-icon md-font-library="material-icons">menu</md-icon>
+                            <md-button aria-label="menu" class="md-fab md-raised md-mini">
+                                <md-icon md-font-library="material-icons" style="color:{{open?'':assignment.priority.color}}">{{open?'close':assignment.priority.icon}}</md-icon ng-hide="open">
                             </md-button>
                         </md-fab-trigger>
                         <md-fab-actions style="width:0">
                             <md-menu ng-if="!assignment.editing">
-                                <md-button md-menu-origin  class="md-fab md-raised md-mini" ng-click="$mdOpenMenu($event)">
+                                <md-button md-menu-origin class="md-fab md-raised md-mini" ng-click="$mdOpenMenu($event)">
                                     <md-icon md-font-library="material-icons" style="color:{{assignment.priority.color}}">{{assignment.priority.icon}}</md-icon>
                                 </md-button>
                                 <md-menu-content width="4">
