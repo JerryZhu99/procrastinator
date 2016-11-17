@@ -55,6 +55,7 @@ app.controller('mainController', function($scope, $mdSidenav, $mdToast, $mdDialo
     }
     $scope.showNewAssignment = function(){
         $scope.creating = true;
+        $scope.newAssignment.color = $scope.options[0];
         window.scrollTo(0,0);
     }
     $scope.hideNewAssignment = function(){
