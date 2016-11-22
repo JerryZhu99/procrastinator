@@ -98,7 +98,7 @@
                     <span hide-xs>Assignments</span>
                     <span flex></span>
                     <span>Sorting by {{sort[0]=="dueDate"?"due date":"priority"}}&nbsp;&nbsp;</span>
-                    <md-switch class="md-primary" ng-model="sort" ng-true-value="['priority.rank','dueDate']" ng-false-value="['dueDate','priority.rank']" ng-change="saveSort()">
+                    <md-switch class="md-primary" ng-model="sort" ng-true-value="['priority.rank','dueDate']" ng-false-value="['dueDate','priority.rank']" ng-change="saveSort()" aria-label="Sort">
                     </md-switch>
                 </div>
             </md-toolbar>
@@ -156,20 +156,23 @@
                     </div>
                 </md-list-item>
                 <md-divider inset></md-divider>
-                <md-list-item class="md-2-line" ng-repeat="assignment in assignments|filter:search|orderBy:sort track by assignment.id" style="background-color:{{assignment.color}}; overflow:visible" ng-click="null">
+                <md-list-item class="md-2-line" ng-repeat="assignment in assignments|filter:search|orderBy:sort track by assignment.id" style="background-color:{{assignment.color}}; overflow:visible" ng-click="toggle=!toggle">
                     <div class="md-list-item-text" ng-if="!assignment.editing">
-                        <h3>
+                        <h3 hide-xs>
                             {{assignment.name}}
+                        </h3>
+                        <h3 hide-gt-xs>
+                            {{toggle?(assignment.description?assignment.description:assignment.name):assignment.name}}
                         </h3>
                         <p hide-xs>
                             {{assignment.description}}
                         </p>
                         <p hide-gt-xs>
-                            {{getDateDiff(assignment)}}
+                            {{toggle?getDate(assignment):getDateDiff(assignment)}}
                         </p>
                     </div>
                     <p class="md-secondary" ng-if="!assignment.editing" hide-xs>
-                        {{getDateDiff(assignment)}}
+                        {{toggle?getDate(assignment):getDateDiff(assignment)}}
                     </p>
 
                     <md-button class="md-icon-button md-raised md-secondary" ng-click="startEdit(assignment)" aria-label="Edit" ng-if="!assignment.editing" hide-xs>
